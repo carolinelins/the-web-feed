@@ -96,10 +96,10 @@ type Post = {
 
 ## **🎨 Mock-ups / Screenshots**  
 ### **1. Interface Principale**  
-![Interface](docs/images/interface1.png)  
+![Interface](docs/images/interface-1.png)  
 - **Zone de filtrage** : Boutons pour sélectionner un mot-clé.  
 - **Liste des posts** : Affichage des publications correspondantes.
-![Interface](docs/images/interface2.png)
+![Interface](docs/images/interface-2.png)
 
 ### **2. Exemple de Post**  
 ![Post Example](docs/images/post.png)  
