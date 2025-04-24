@@ -1,6 +1,7 @@
 import axios from 'axios'
 import type { ParsedQs } from 'qs'
 import { PostEntity } from '../entities/postEntity'
+import { buildEmbed, normalizeEmbedType } from '../utils/embedUtils'
 
 const API_URL = 'https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts'
 
@@ -10,16 +11,22 @@ async function fetchRecentPosts(q?: string | ParsedQs | (string | ParsedQs)[]): 
       params: { q, lang: 'fr' }
     })
 
-    return response.data.posts.map((post: any) => ({
-      author: {
-        handle: post.author?.handle,
-        displayName: post.author?.displayName,
-        avatar: post.author?.avatar
-      },
-      uri: post.uri,
-      text: post.record?.text,
-      createdAt: post.record?.createdAt
-    }))
+    return response.data.posts.map((post: any) => {
+      const embedType = post.embed ? normalizeEmbedType(post.embed['$type']) : ''
+
+      return {
+        author: {
+          handle: post.author?.handle,
+          displayName: post.author?.displayName,
+          avatar: post.author?.avatar
+        },
+        rkey: post.uri?.split('/').pop(),
+        text: post.record?.text,
+        createdAt: post.record?.createdAt,
+        embed: post.embed ? buildEmbed(embedType, post.embed) : {},
+        embedRaw: post.embed
+      }
+    })
   } catch (error: any) {
     console.log('Erreur dans la requête API BlueSky : ', error)
     throw {
