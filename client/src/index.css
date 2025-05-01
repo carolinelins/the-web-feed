@@ -77,3 +77,13 @@ button:focus-visible {
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
+
+.position-relative:hover img {
+  opacity: 0.5 !important;
+}
+
+.position-relative:hover .bi-play-circle {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1.1); /* Ajuste para o translate-middle */
+  transition: all 0.2s ease;
+}

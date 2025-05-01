@@ -5,6 +5,7 @@ const embedTypeMap: Record<string, string> = {
   "app.bsky.embed.external": "external",
   "app.bsky.embed.record": "record",
   "app.bsky.embed.recordWithMedia": "recordWithMedia",
+  "app.bsky.embed.video": "video"
 };
 
 export function normalizeEmbedType(type: string): string {
@@ -57,7 +58,21 @@ export function buildEmbed(type: string, embed: any): EmbedEntity {
         createdAt: embed?.record?.record?.value?.createdAt,
         text: embed?.record?.record?.value?.text,
         rkey: embed?.record?.record?.uri?.split('/').pop()
+      },
+      images: (embed?.media && normalizeEmbedType(embed.media['$type']) == 'images') && embed.media.images.map((image: any) => ({
+        thumb: image.thumb,
+        alt: image.alt
+      })),
+      external: (embed?.media && normalizeEmbedType(embed.media['$type']) == 'external') && {
+        description: embed?.media?.external?.description,
+        thumb: embed?.media?.external?.thumb,
+        title: embed?.media?.external?.title,
+        uri: embed?.media?.external?.uri
       }
+    }
+    case 'video': return {
+      type,
+      thumbnail: embed?.thumbnail
     }
     default: return { type }
   }

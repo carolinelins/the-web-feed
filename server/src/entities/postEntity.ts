@@ -28,6 +28,7 @@ export type EmbedEntity = {
   images?: ImageEntity[]
   external?: ExternalEntity
   record?: RecordEntity
+  thumbnail?: string
 }
 
 export type PostEntity = {
@@ -36,5 +37,4 @@ export type PostEntity = {
   text: string
   createdAt: string
   embed: EmbedEntity
-  embedRaw:any
 }

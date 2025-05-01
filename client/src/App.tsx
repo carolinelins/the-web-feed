@@ -8,6 +8,11 @@ type Author = {
   avatar: string
 }
 
+type Image = {
+  thumb: string
+  alt: string
+}
+
 type Post = {
   rkey: string
   text: string
@@ -15,10 +20,8 @@ type Post = {
   author: Author
   embed?: {
     type: string
-    images?: {
-      thumb: string
-      alt: string
-    }[]
+    thumbnail?: string
+    images?: Image[]
     external?: {
       thumb: string
       title: string
@@ -52,7 +55,7 @@ function PostList() {
     'vue.js'
   ]
 
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (carouselRef.current && window.bootstrap?.Carousel) {
@@ -163,59 +166,99 @@ function PostList() {
                           <div className="row mb-1">
                             {post.text}
                           </div>
-                          <div className="row">
-                            <div className="col px-0">
 
-                              {(post.embed && post.embed.type == 'images') &&
-                                <>
-                                  {(post.embed.images) && <>
-                                    {post.embed.images.length > 1
-                                      ? <div id='carousel-images' className="carousel slide w-50">
-                                        <div className="carousel-inner">
-                                          {post.embed.images.map((image: any, i: number) => <div
-                                            key={`${post.rkey}-image-${i}`}
-                                            className={`carousel-item${i == 0 ? ' active' : ''}`}>
-                                            <img
-                                              className='img-thumbnail px-1 me-1 mb-1 object-fit-cover'
-                                              src={image.thumb}
-                                              style={{ minHeight: '100%' }}
-                                            />
-                                          </div>)}
-                                        </div>
-                                        <button className="carousel-control-prev" type="button" data-bs-target="#carousel-images" data-bs-slide="prev">
-                                          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                                          <span className="visually-hidden">Previous</span>
-                                        </button>
-                                        <button className="carousel-control-next" type="button" data-bs-target="#carousel-images" data-bs-slide="next">
-                                          <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                                          <span className="visually-hidden">Next</span>
-                                        </button>
+                          {(post.embed && (post.embed.type == 'images' || post.embed.type == 'recordWithMedia')) &&
+                            <>
+
+                              {(post.embed.images) && <div className="row">
+                                <div className="col px-0">
+                                  {post.embed.images.length > 1
+                                    ? <div id={`carousel-images-${post.rkey}`} className="carousel slide w-50">
+                                      <div className="carousel-inner">
+                                        {post.embed.images.map((image: Image, i: number) => <div
+                                          key={`${post.rkey}-image-${i}`}
+                                          className={`carousel-item${i == 0 ? ' active' : ''}`}>
+                                          <img
+                                            alt={image.alt}
+                                            className='img-thumbnail px-1 me-1 mb-1 object-fit-cover mh-100 mw-100'
+                                            src={image.thumb}
+                                          />
+                                        </div>)}
                                       </div>
-                                      : <img
-                                        alt={post.embed.images[0].alt}
-                                        className='img-thumbnail px-1 me-1 mb-1 object-fit-cover w-50'
-                                        src={post.embed.images[0].thumb}
-                                        style={{ minHeight: '100%' }}
-                                      />}
-                                  </>}
-                                </>}
-
-                              {post.embed && post.embed.type == 'external' && <div className="card w-50">
-                                <img src={post.embed.external?.thumb} className="card-img-top" alt="" />
-                                <div className="card-body">
-                                  <h5 className="card-title">{post.embed.external?.title}</h5>
-                                  <p className="card-text">
-                                    {post.embed.external?.description}
-                                  </p>
-                                </div>
-                                <div className="card-footer">
-                                  <a href={post.embed.external?.uri} target="_blank">
-                                    {post.embed.external?.uri}
-                                  </a>
+                                      <button className="carousel-control-prev" type="button" data-bs-target={`#carousel-images-${post.rkey}`} data-bs-slide="prev">
+                                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span className="visually-hidden">Previous</span>
+                                      </button>
+                                      <button className="carousel-control-next" type="button" data-bs-target={`#carousel-images-${post.rkey}`} data-bs-slide="next">
+                                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span className="visually-hidden">Next</span>
+                                      </button>
+                                    </div>
+                                    : <img
+                                      alt={post.embed.images[0].alt}
+                                      className='img-thumbnail px-1 me-1 mb-1 object-fit-cover w-50'
+                                      src={post.embed.images[0].thumb}
+                                      style={{ minHeight: '100%' }}
+                                    />}
                                 </div>
                               </div>}
 
-                              {post.embed && (post.embed.type == 'record' || post.embed?.type == 'recordWithMedia') && <div className="card">
+                            </>}
+
+                          {post.embed && (post.embed.type == 'external' || post.embed.type == 'recordWithMedia') && <>
+
+                            {post.embed.external && <div className="row">
+                              <div className="col px-0">
+                                <div className="card w-50">
+                                  {post.embed.external.thumb && <img src={post.embed.external.thumb} className="card-img-top" alt="" />}
+                                  <div className="card-body">
+                                    <h5 className="card-title">{post.embed.external?.title}</h5>
+                                    <p className="card-text">
+                                      {post.embed.external?.description}
+                                    </p>
+                                  </div>
+                                  <div className="card-footer">
+                                    <a href={post.embed.external.uri} target="_blank">
+                                      {post.embed.external.uri}
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>}
+
+                          </>}
+
+
+
+                          {(post.embed && (post.embed.type === 'video' || post.embed?.type == 'recordWithMedia')) && <>
+
+                            {post.embed.thumbnail && <div className="row">
+                              <div className="col-6 px-0 mt-1">
+                                <div className="position-relative">
+                                  <a
+                                    href={`https://bsky.app/profile/${post.author.handle}/post/${post.rkey}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="d-block"
+                                  >
+                                    <img
+                                      alt=""
+                                      className="img-thumbnail px-1 me-1 mb-1 object-fit-cover w-100"
+                                      src={post.embed.thumbnail}
+                                      style={{ opacity: 0.75 }}
+                                    />
+                                    <i className="bi bi-play-circle position-absolute top-50 start-50 translate-middle text-white opacity-75"
+                                      style={{ fontSize: '5rem' }} />
+                                  </a>
+                                </div>
+                              </div>
+                            </div>}
+
+                          </>}
+
+                          {post.embed && (post.embed.type == 'record' || post.embed?.type == 'recordWithMedia') && <div className="row">
+                            <div className="col px-0 mt-1">
+                              <div className="card">
                                 <div className="card-body py-2">
                                   <div className="row">
                                     <div className="col-auto">
@@ -244,9 +287,10 @@ function PostList() {
                                   </div>
                                   {post.embed?.record?.text}
                                 </div>
-                              </div>}
+                              </div>
                             </div>
-                          </div>
+                          </div>}
+
                         </div>
                       </div>
                     </div>

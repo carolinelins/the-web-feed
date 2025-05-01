@@ -3,7 +3,7 @@ import type { ParsedQs } from 'qs'
 import { PostEntity } from '../entities/postEntity'
 import { buildEmbed, normalizeEmbedType } from '../utils/embedUtils'
 
-const API_URL = 'https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts'
+const API_URL = 'https://api.bsky.app/xrpc/app.bsky.feed.searchPosts'
 
 async function fetchRecentPosts(q?: string | ParsedQs | (string | ParsedQs)[]): Promise<PostEntity[]> {
   try {
@@ -23,8 +23,7 @@ async function fetchRecentPosts(q?: string | ParsedQs | (string | ParsedQs)[]): 
         rkey: post.uri?.split('/').pop(),
         text: post.record?.text,
         createdAt: post.record?.createdAt,
-        embed: post.embed ? buildEmbed(embedType, post.embed) : {},
-        embedRaw: post.embed
+        embed: post.embed ? buildEmbed(embedType, post.embed) : {}
       }
     })
   } catch (error: any) {
