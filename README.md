@@ -114,7 +114,7 @@ type Post = {
 ```bash
 cd server
 npm install
-npm start  # Lance le serveur sur http://localhost:3001
+npm run dev  # Lance le serveur sur http://localhost:3001
 ```
 
 ### **2. Frontend**  
